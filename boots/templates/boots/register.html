@@ -1,0 +1,32 @@
+{% extends 'components/base_form.html' %}
+
+<!--Only stuff in blocks show-->
+	<div class="col-md-8">
+        <div class="card">
+            <div class="card-header" data-background-color="purple">
+                <h4 class="title">{% block form_title %}User Registeration{% endblock form_title %}</h4>
+                <p class="category">{% block form_description %}Create an account{% endblock form_description %}</p>
+            </div>
+            <div class="card-content">
+                <form>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group label-floating">
+                                <label class="control-label">Username</label>
+                                <input type="text" class="form-control" >
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group label-floating">
+                                <label class="control-label">Email address</label>
+                                <input type="email" class="form-control" >
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary pull-right">{% block submit_text %}Register{% endblock submit_text %}</button>
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>

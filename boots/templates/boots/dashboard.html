@@ -1,0 +1,99 @@
+
+{% extends 'components/base_dashboard.html' %}
+
+{% block dashboard_content %}
+	{% url 'bot_detail' as bot_detail_link %}
+	<div class="content">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-lg-3 col-md-6 col-sm-6">
+					<div class="card card-stats">
+						<div class="card-header" data-background-color="green">
+							<i class="material-icons">devices_other</i>
+						</div>
+						<div class="card-content">
+							<p class="category">Total Bots</p>
+							<h3 class="title">{{ total_bots }}</h3>
+						</div>
+						<div class="card-footer">
+							<div class="stats">
+								<i class="material-icons">update</i> Just Updated
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 col-sm-6">
+					<div class="card card-stats">
+						<div class="card-header" data-background-color="blue">
+							<i class="material-icons">visibility</i>
+						</div>
+						<div class="card-content">
+							<p class="category">Online Bots</p>
+							<h3 class="title">{{ online_bots }}</h3>
+						</div>
+						<div class="card-footer">
+							<div class="stats">
+								<i class="material-icons">update</i> Just Updated
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-6 col-sm-6">
+					<div class="card card-stats">
+						<div class="card-header" data-background-color="red">
+							<i class="material-icons">do_not_disturb_on</i>
+						</div>
+						<div class="card-content">
+							<p class="category">Offline Bots</p>
+							<h3 class="title">{{ offline_bots }}</h3>
+						</div>
+						<div class="card-footer">
+							<div class="stats">
+								<i class="material-icons">update</i> Just Updated
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% block dashboard_main %}
+				<div class="row">
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-header" data-background-color="purple">
+								<h4 class="title">{% block bots_table_name %}Your Bots{% endblock bots_table_name %}</h4>
+								<p class="category">{% block bots_table_description %}List of all infected computers{% endblock bots_table_description %}</p>
+							</div>
+						{% block bots_table %}
+							<div class="card-content table-responsive">
+								<table class="table">
+									<thead class="text-primary">
+										<th>Name</th>
+										<th>Country</th>
+										<th>Infection Date</th>
+									{% block last_column_header %}
+										<th></th>
+									{% endblock last_column_header %}
+									</thead>
+									<tbody>
+									{% for bot in bots %}
+										<tr>
+											<td><a class="text-danger" href="{{ bot_detail_link }}{{ bot.id }}">{{ bot.name }}</a></td>
+											<td>{{ bot.country }}</td>
+											<td>{{ bot.created_at }}</td>
+										{% block last_column_value %}
+											<td><button class="btn btn-info">Download Passwords</button></td>
+										{% endblock last_column_value %}
+										</tr>
+									{% endfor %}
+									</tbody>
+								</table>
+
+							</div>
+						{% endblock bots_table %}
+						</div>
+					</div>
+				</div>
+			{% endblock dashboard_main %}
+		</div>
+	</div>
+{% endblock dashboard_content %}

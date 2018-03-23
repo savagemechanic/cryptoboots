@@ -1,0 +1,51 @@
+{% extends 'dashboard.html' %}
+
+<!--Only stuff in blocks show-->
+{% block dashboard_main %}
+	<div class="row">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header" data-background-color="purple">
+						<h4 class="title">Bot Details</h4>
+						<p class="category"></p>
+						<button class="btn btn-danger">Delete Bot</button>
+						{% if bot_active %}
+							<button class="btn btn-info">Download Passwords</button>
+							<p>Online</p>
+						{% else %}
+							<p>Offline</p>
+						{% endif %}
+					</div>
+					<div class="card-content">
+						<div id="typography">
+							<div class="title">
+								<h2>{{ bot_name }}</h2>
+							</div>
+							<div class="row">
+								<div class="tim-typo">
+									<h3><span class="tim-note">Name</span>{{ bot_name }}</h3>
+								</div>
+								<div class="tim-typo">
+									<h3><span class="tim-note">Location</span>{{ bot_country }}, {{ bot_continent }}</h3>
+								</div>
+								<div class="tim-typo">
+									<h3><span class="tim-note">IP Address</span>{{ bot_ip }}</h3>
+								</div>
+								<div class="tim-typo">
+									<h3><span class="tim-note">MAC Address</span>{{ bot_mac }}</h3>
+								</div>
+								<div class="tim-typo">
+									<h3><span class="tim-note">Last Online</span>{{ bot_last_active }}</h3>
+								</div>
+								<div class="tim-typo">
+									<h3><span class="tim-note">Infection Date</span>{{ bot_created_at }}</h3>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock dashboard_main %}

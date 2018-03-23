@@ -1,0 +1,60 @@
+
+{% extends 'components/base.html' %}
+
+{% block content %}
+	{% load panel_tags %}
+	{% url 'index' as home_link %}
+	{% url 'login' as login_link %}
+	{% url 'authenticate' as auth_link %}
+	{% url 'register_user' as register_user_link %}
+	{% url 'register' as register_link %}
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header" data-background-color="purple">
+                <h4 class="title">{% block form_title %}Form Title{% endblock form_title %}</h4>
+                <p class="category">{% block form_description %}Form Description{% endblock form_description %}</p>
+            </div>
+            <div class="card-content">
+                {% if form.errors %}
+                    {% block form_errors_msg %}<p>Your username and password didn't match. Please try again.</p>{% endblock form_errors_msg %}
+                {% endif %}
+
+                {% if next %}
+                    {% if user.is_authenticated %}
+                        {% block auth_success_redirect_fail_msg %}<p>Your account doesn't have access to this page. To proceed,
+                        please login with an account that has access.</p>{% endblock auth_success_redirect_fail_msg %}
+                    {% else %}
+                        {% block redirect_fail_msg %}<p>Please login to see this page.</p>{% endblock redirect_fail_msg %}
+                    {% endif %}
+                {% endif %}
+                <form action="{% block post_link %}{{ register_user_link }}{% endblock post_link %}" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                    {% block username_field %}
+                        <div class="col-md-8">
+                            <div class="form-group label-floating">
+                                <label class="control-label">Username</label>
+                                <input  name="username" type="text" class="form-control">
+                            </div>
+                        </div>
+                    {% endblock username_field %}
+                    {% block password_field %}
+                        <div class="col-md-8">
+                            <div class="form-group label-floating">
+                                <label class="control-label">Password</label>
+                                <input type="password" name="password" class="form-control"/>
+                            </div>
+                        </div>
+                    {% endblock password_field %}
+                    </div>
+
+                    {% block alt_content %}<a href="{% block alt_link %}{{ login_link }}{% endblock alt_link %}" class="pull-left">{% block alt_text %}Already have an account? Log in{% endblock alt_text %}</a>{% endblock alt_content %}
+                    <input type="submit" class="btn btn-primary pull-right" value="{% block submit_text %}Submit{% endblock submit_text %}"/>
+                    <input type="hidden" name="next" value="{{ next }}" />
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

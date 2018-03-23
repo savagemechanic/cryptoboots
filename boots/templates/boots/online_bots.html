@@ -1,0 +1,14 @@
+{% extends 'dashboard.html' %}
+
+<!--Only stuff in blocks show-->
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-header" data-background-color="purple">
+				<h4 class="title">{% block bots_table_name %}Online Bots{% endblock bots_table_name %}</h4>
+				<p class="category">{% block bots_table_description %}List of all offline infected computers{% endblock bots_table_description %}</p>
+			</div>
+		</div>
+	</div>
+</div>
