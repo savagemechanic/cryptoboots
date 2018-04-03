@@ -1,0 +1,60 @@
+{% extends 'user_dashboard.html' %}
+
+<!--Only stuff in blocks show-->
+
+{% block dashboard_main %}
+			<div class="row">
+				<div class="col-md-8">
+					<div class="card">
+						<div class="card-header" data-background-color="green">
+							<h4 class="title">Edit Profile</h4>
+							<p class="category">Complete your profile</p>
+						</div>
+						<div class="card-content">
+							<form>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group label-floating">
+											<label class="control-label">Ethereum Wallet Address</label>
+											<input type="text" class="form-control" >
+										</div>
+									</div>
+								</div>
+
+								<div class="row">
+									<div class="col-md-12">
+										<div class="form-group label-floating">
+											<label class="control-label">Bitcoin Wallet Address</label>
+											<input type="text" class="form-control" >
+										</div>
+									</div>
+								</div>
+
+								<button type="submit" class="btn btn-primary pull-right">Update</button>
+								<div class="clearfix"></div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="card card-profile">
+						<!-- <div class="card-avatar">
+							<a href="#pablo">
+								<img class="img" src="../assets/img/faces/marc.jpg" />
+							</a>
+						</div> -->
+
+						<div class="content">
+							<!-- <h6 class="category text-gray">Referral link: email2</h6> -->
+							<h4 class="card-title">email@gmail.com</h4>
+							<div class="card-content">
+								<h6 style="display:inline-block;">ETH Address: </h6> 902892893993
+								<br/>
+								<h6 style="display:inline-block;">BTC Address: </h6> 902892893993
+							</div>
+							<!-- <a href="#pablo" class="btn btn-primary btn-round">Follow</a> -->
+						</div>
+					</div>
+				</div>
+			</div>
+{% endblock dashboard_main %}

@@ -1,47 +1,25 @@
-{% extends 'components/base_form.html' %}
+{% extends 'components/base_auth_form.html' %}
 
 <!--Only stuff in blocks show-->
-	<div class="col-md-8">
-        <div class="card">
-            <div class="card-header" data-background-color="purple">
-                <h4 class="title">{% block form_title %}User Login{% endblock form_title %}</h4>
-                <p class="category">{% block form_description %}Create an account{% endblock form_description %}</p>
-            </div>
-            <div class="card-content">
-                {% if form.errors %}
-                    {% block form_errors_msg %}<p>Your username and password didn't match. Please try again.</p>{% endblock form_errors_msg %}
-                {% endif %}
+{% block form_title %}User Login{% endblock form_title %}
+{% block form_description %}Create an account{% endblock form_description %}
+<!-- <div class="card-content"> -->
+<!-- Error handling -->
+{% if form.errors %}
+    {% block form_errors_msg %}<p>Your username and password didn't match. Please try again.</p>{% endblock form_errors_msg %}
+{% endif %}
 
-                {% if next %}
-                    {% if user.is_authenticated %}
-                        {% block auth_success_redirect_fail_msg %}<p>Your account doesn't have access to this page. To proceed,
-                        please login with an account that has access.</p>{% endblock auth_success_redirect_fail_msg %}
-                    {% else %}
-                        {% block redirect_fail_msg %}<p>Please login to see this page.</p>{% endblock redirect_fail_msg %}
-                    {% endif %}
-                {% endif %}
-                <form action="{% block post_link %}{% url 'login' %}{% endblock post_link %}" method="post">
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group label-floating">
-                                <label class="control-label">Username</label>
-                                <input type="text" class="form-control" >
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group label-floating">
-                                <label class="control-label">Email address</label>
-                                <input type="email" class="form-control" >
-                            </div>
-                        </div>
-                    </div>
+{% if next %}
+    {% if user.is_authenticated %}
+        {% block auth_success_redirect_fail_msg %}<p>Your account doesn't have access to this page. To proceed,
+        please login with an account that has access.</p>{% endblock auth_success_redirect_fail_msg %}
+    {% else %}
+        {% block redirect_fail_msg %}<p>Please login to see this page.</p>{% endblock redirect_fail_msg %}
+    {% endif %}
+{% endif %}
+{% block post_link %}{% url 'login' %}{% endblock post_link %}
 
-                    <a href="{% block alt_link %}{{ register_link }}{% endblock alt_link %}" class="pull-left">{% block alt_text %}Don't have an account? Register{% endblock alt_text %}</a>
-                    <button type="submit" class="btn btn-primary pull-right">{% block submit_text %}Login{% endblock submit_text %}</button>
-                    <input type="hidden" name="next" value="{{ next }}" />
-                    <div class="clearfix"></div>
-                </form>
-            </div>
-        </div>
-    </div>
+
+{% block alt_link %}{{ register_link }}{% endblock alt_link %}
+{% block alt_text %}Don't have an account? Register{% endblock alt_text %}
+{% block submit_text %}Login{% endblock submit_text %}

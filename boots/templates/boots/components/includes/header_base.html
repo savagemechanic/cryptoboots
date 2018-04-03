@@ -1,0 +1,26 @@
+
+{% load panel_tags %}
+<div class="{% block header_class %}header header-filter{% endblock header_class %}" style="background-image: url('https://images.unsplash.com/photo-1423655156442-ccc11daa4e99?crop=entropy&dpr=2&fit=crop&fm=jpg&h=750&ixjsv=2.1.0&ixlib=rb-0.3.5&q=50&w=1450');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- <div class="brand"> -->
+                    <h1 class="title"> 
+                        {% block title %}
+                        Coin Boost
+                        {% endblock title %}
+                    </h1>
+                    <h4>
+                        {% block subtitle %}
+                        Grow your crypto.
+                        {% endblock subtitle %}
+                    </h4>
+                    <br/>
+                    <a href="{% url 'register' %}" class="btn btn-danger btn-raised btn-lg">
+                     Get Started
+                    </a>
+                <!-- </div> -->
+            </div>
+        </div>
+    </div>
+</div>

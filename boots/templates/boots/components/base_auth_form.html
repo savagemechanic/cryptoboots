@@ -1,5 +1,5 @@
 
-{% extends 'components/base.html' %}
+{% extends 'components/base_dashboard_assets.html' %}
 
 {% block content %}
 	{% load panel_tags %}
@@ -8,8 +8,11 @@
 	{% url 'authenticate' as auth_link %}
 	{% url 'register_user' as register_user_link %}
 	{% url 'register' as register_link %}
+	{% url 'password_reset' as password_reset_link %}
 
-    <div class="col-md-8">
+    {% include 'components/navbars/navbar_color_relative.html' %}
+
+    <div class="col-md-4 col-md-offset-4">
         <div class="card">
             <div class="card-header" data-background-color="purple">
                 <h4 class="title">{% block form_title %}Form Title{% endblock form_title %}</h4>
@@ -49,7 +52,19 @@
                     {% endblock password_field %}
                     </div>
 
-                    {% block alt_content %}<a href="{% block alt_link %}{{ login_link }}{% endblock alt_link %}" class="pull-left">{% block alt_text %}Already have an account? Log in{% endblock alt_text %}</a>{% endblock alt_content %}
+                    <div class="pull-left" style="margin: 10px 0;">
+                        {% block alt_content %}
+                        <a href="{% block alt_link %}{{ login_link }}{% endblock alt_link %}">
+                            {% block alt_text %}Already have an account? Log in{% endblock alt_text %}
+                        </a>
+                        {% endblock alt_content %}
+                        <br>
+                        {% block reset_pwd %}
+                        <a href="{{ password_reset_link }}" class="text-danger">
+                            {% block reset_pwd_text %}Forgot Password?{% endblock reset_pwd_text %}
+                        </a>
+                        {% endblock reset_pwd %}
+                    </div>
                     <input type="submit" class="btn btn-primary pull-right" value="{% block submit_text %}Submit{% endblock submit_text %}"/>
                     <input type="hidden" name="next" value="{{ next }}" />
                     <div class="clearfix"></div>
