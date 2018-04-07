@@ -6,14 +6,7 @@
 	<div class="content">
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-lg-12">
-					<div class="card">
-						<div class="card-content">
-							<p class="category">Referral Link</p>
-							<h3 class="title">email2</h3>
-						</div>
-					</div>
-				</div>
+				{% block dashboard_stats %}
 				<!-- <div class="col-lg-3 col-md-6 col-sm-6">
 					<div class="card card-stats">
 						<div class="card-header" data-background-color="blue">
@@ -30,40 +23,96 @@
 						</div>
 					</div>
 				</div> -->
+				{% endblock dashboard_stats %}
+				{% block reminder_block %}
+				<div class="col-lg-12">
+					<div class="card">
+						<div class="card-content">
+							<p class="category">Referral Link</p>
+							<h3 class="title">{% url 'register' %}?referrer={{ user.userprofile.referral_code }}</h3>
+						</div>
+					</div>
+				</div>
+				{% endblock reminder_block %}
+				
 			</div>
 			{% block dashboard_main %}
 				<div class="row">
 					<div class="col-md-12">
 						<div class="card">
 							<div class="card-header" data-background-color="purple">
-								<h4 class="title">{% block bots_table_name %}Your Bots{% endblock bots_table_name %}</h4>
-								<p class="category">{% block bots_table_description %}List of all infected computers{% endblock bots_table_description %}</p>
+								<h4 class="title">{% block main_table_name %}Deposits{% endblock main_table_name %}</h4>
+								<p class="category">{% block main_table_description %}All confirmed and pending deposits{% endblock main_table_description %}</p>
 							</div>
-						{% block bots_table %}
+						{% block main_table %}
 							<div class="card-content table-responsive">
 								<table class="table">
 									<thead class="text-primary">
-										<th>Name</th>
-										<th>Country</th>
-										<th>Infection Date</th>
-									{% block last_column_header %}
-										<th></th>
-									{% endblock last_column_header %}
+										<th>Amount</th>
+										<th>Coin</th>
+										<th>Your Address</th>
+										<th>Recipient Address</th>
+										<th>Investment Plan</th>
+										<th>Status</th>
+										<th>Date</th>
+									</thead>
+									<tbody>
+										{% for deposit in deposits %}
+										<tr>
+											<!-- <td><a class="text-danger" href="{{ bot_detail_link }}{{ bot.id }}">{{ bot.name }}</a></td> -->
+											<td>${{ deposit.amount }}</td>
+											<td>{{ deposit.coin_type_name }}</td>
+											<td>{{ deposit.sender_address }}</td>
+											<td>{{ deposit.recipient_address }}</td>
+											<td>{{ deposit.investment_plan.name }}</td>
+											<td>{{ deposit.status_name }}</td>
+											<td>{{ deposit.created_at }}</td>
+											<!-- <td><button class="btn btn-info">Download Passwords</button></td> -->
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+
+							</div>
+						{% endblock main_table %}
+						</div>
+					</div>
+
+					<div class="col-md-12">
+						<div class="card">
+							<div class="card-header" data-background-color="red">
+								<h4 class="title">{% block secondary_table_name %}Withdrawals{% endblock secondary_table_name %}</h4>
+								<p class="category">{% block secondary_table_description %}All confirmed and pending withdrawals{% endblock secondary_table_description %}</p>
+							</div>
+						{% block secondary_table %}
+							<div class="card-content table-responsive">
+								<table class="table">
+									<thead class="text-primary">
+										<th>Amount</th>
+										<th>Coin</th>
+										<th>Address</th>
+										<th>Status</th>
+										<th>Date</th>
 									</thead>
 									<tbody>
 										<tr>
-											<td><a class="text-danger" href="{{ bot_detail_link }}{{ bot.id }}">{{ bot.name }}</a></td>
-											<td>{{ bot }}</td>
-											<td>{{ bot }}</td>
-										{% block last_column_value %}
-											<td><button class="btn btn-info">Download Passwords</button></td>
-										{% endblock last_column_value %}
+											{% for withdrawal in withdrawals %}
+											<tr>
+												<!-- <td><a class="text-danger" href="{{ bot_detail_link }}{{ bot.id }}">{{ bot.name }}</a></td> -->
+												<td>${{ withdrawal.amount }}</td>
+												<td>{{ withdrawal.coin_type_name }}</td>
+												<td>{{ withdrawal.address }}</td>
+												<td>{{ withdrawal.status_name }}</td>
+												<td>{{ withdrawal.created_at }}</td>
+												<!-- <td><button class="btn btn-info">Download Passwords</button></td> -->
+											</tr>
+											{% endfor %}
 										</tr>
 									</tbody>
 								</table>
 
 							</div>
-						{% endblock bots_table %}
+						{% endblock secondary_table %}
 						</div>
 					</div>
 				</div>

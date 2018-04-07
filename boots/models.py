@@ -6,14 +6,26 @@ from django.utils import timezone
 import datetime
 from django.contrib.auth.models import User
 
-from constants import withdrawal_request_status, deposit_status
+from constants import withdrawal_request_status, deposit_status, coin_types
 
+# helpers
 class AutoDateTimeField(models.DateTimeField):
     def pre_save(self, model_instance, add):
         return datetime.datetime.now()
 
-# Create your models here.
+def get_matching_key(value, collection, upper=False):
+    for key in collection:
+      if value == collection[key]:
+        if upper:
+          return key.upper()
+        else:
+          return key
+    return None
 
+def get_coin_type_name(coin_type):
+    return get_matching_key(coin_type, coin_types, upper=True)
+
+# Create your models here.
 class InvestmentPlan(models.Model):
   name = models.TextField(blank=False, unique=True, max_length=150)
   description = models.TextField(max_length=350, blank=True, null=True)
@@ -29,23 +41,18 @@ class InvestmentPlan(models.Model):
     app_label = 'boots'
 
 
-class UserProfile(models.Model):#One-to-One [Each bot has a user]
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
-  referral_code = models.CharField(blank=False, unique=True, max_length=50)
-  referrer = models.ForeignKey('UserProfile', on_delete=models.CASCADE, null=True) # user that referred this user
-  investment_plans = models.ManyToManyField(InvestmentPlan)
-  payee_type = models.IntegerField(blank=True, null=True)
+class Role(models.Model):
+  name = models.CharField(blank=False, unique=True, max_length=50)
+  created_at = models.DateTimeField(default=timezone.now, editable=False)
+  updated_at = AutoDateTimeField(default=timezone.now, editable=False)
 
   class Meta():
     app_label = 'boots'
-    permissions = (('can_view_user_dashboard', 'To view user dashboard'),
-    ('can_view_admin_dashboard', 'To view admin dashboard'),
-    ('can_view_super_admin_dashboard', 'To view super admin dashboard'))
 
 
 class Wallet(models.Model):#One-to-One [Each bot has a user]
-  balance = models.DecimalField(max_digits=19, decimal_places=2)
-  eth_address = models.TextField( max_length=250, blank=True, null=True)
+  balance = models.DecimalField(max_digits=19, decimal_places=2, default=0.00)
+  eth_address = models.TextField(max_length=250, blank=True, null=True)
   btc_address = models.TextField(max_length=250, blank=True, null=True)
   created_at = models.DateTimeField(default=timezone.now, editable=False)
   updated_at = AutoDateTimeField(default=timezone.now, editable=False)
@@ -57,7 +64,7 @@ class Wallet(models.Model):#One-to-One [Each bot has a user]
 class UserWallet(models.Model):#One-to-One [Each bot has a user]
   wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
   # currency = models.CharField(max_length=10, default='USD')
-  user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+  user = models.OneToOneField('UserProfile', on_delete=models.CASCADE)
   last_withdrawal = models.DateTimeField(blank=True, null=True)
   created_at = models.DateTimeField(default=timezone.now, editable=False)
   updated_at = AutoDateTimeField(default=timezone.now, editable=False)
@@ -66,12 +73,61 @@ class UserWallet(models.Model):#One-to-One [Each bot has a user]
     app_label = 'boots'
 
 
+class UserProfile(models.Model):#One-to-One [Each bot has a user]
+  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  role = models.ForeignKey(Role, on_delete=models.CASCADE)
+  referral_code = models.CharField(blank=False, unique=True, max_length=50)
+  referrer = models.ForeignKey('UserProfile', on_delete=models.CASCADE, null=True) # user that referred this user
+  investment_plans = models.ManyToManyField(InvestmentPlan)
+  payee_type = models.IntegerField(blank=True, null=True)
+
+  def generate_referral_code(self, email, user_id):
+    return email.split('@')[0] + str(user_id)
+
+  def create_wallet(self):
+    ''' Create wallet for user '''
+    # create wallet
+    wallet = Wallet()
+    wallet.save()
+    # create user wallet
+    user_wallet = UserWallet(wallet=wallet, user=self)
+    user_wallet.save()
+
+  @property
+  def is_regular(self):
+    return self.role.name == 'regular'
+
+  @property
+  def is_admin(self):
+    return self.role.name == 'admin'
+
+  @property
+  def is_superuser(self):
+    return self.role.name == 'superuser'
+
+  class Meta():
+    app_label = 'boots'
+    permissions = (('can_view_user_dashboard', 'To view user dashboard'),
+    ('can_view_admin_dashboard', 'To view admin dashboard'),
+    ('can_view_super_admin_dashboard', 'To view super admin dashboard'))
+
+
 class WithdrawalRequests(models.Model):
   user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-  amount = models.DecimalField(max_digits=19, decimal_places=2)
+  amount = models.DecimalField(max_digits=19, decimal_places=2, blank=False, null=False)
+  coin_type = models.IntegerField(default=coin_types['btc'], blank=False, null=False)
+  address = models.TextField(max_length=250, blank=False, null=False)
   status = models.IntegerField(default=withdrawal_request_status['pending'])
   created_at = models.DateTimeField(default=timezone.now, editable=False)
   updated_at = AutoDateTimeField(default=timezone.now, editable=False)
+
+  @property
+  def coin_type_name(self):
+    return get_coin_type_name(self.coin_type)
+
+  @property
+  def status_name(self):
+    return get_matching_key(self.status, withdrawal_request_status, upper=True)
 
   class Meta():
     app_label = 'boots'
@@ -79,10 +135,22 @@ class WithdrawalRequests(models.Model):
 
 class Deposits(models.Model):
   user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-  amount = models.DecimalField(max_digits=19, decimal_places=2)
+  amount = models.DecimalField(max_digits=19, decimal_places=2, blank=False, null=False)
+  coin_type = models.IntegerField(default=coin_types['btc'], blank=False, null=False)
+  sender_address = models.TextField(max_length=250, blank=False, null=False)
+  recipient_address = models.TextField(max_length=250, blank=False, null=False)
+  investment_plan = models.ForeignKey(InvestmentPlan, on_delete=models.CASCADE)
   status = models.IntegerField(default=deposit_status['pending'])
   created_at = models.DateTimeField(default=timezone.now, editable=False)
   updated_at = AutoDateTimeField(default=timezone.now, editable=False)
+
+  @property
+  def coin_type_name(self):
+    return get_coin_type_name(self.coin_type)
+
+  @property
+  def status_name(self):
+    return get_matching_key(self.status, deposit_status, upper=True)
 
   class Meta():
     app_label = 'boots'

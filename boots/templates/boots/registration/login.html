@@ -6,7 +6,9 @@
 <!-- <div class="card-content"> -->
 <!-- Error handling -->
 {% if form.errors %}
-    {% block form_errors_msg %}<p>Your username and password didn't match. Please try again.</p>{% endblock form_errors_msg %}
+    {% block form_errors_msg %}
+    <p class="text-danger">Your username and password didn't match. Please try again.</p>
+    {% endblock form_errors_msg %}
 {% endif %}
 
 {% if next %}

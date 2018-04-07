@@ -13,7 +13,11 @@ urlpatterns = [
     # user pages
     url(r'^dashboard', views.user_dashboard, name='user_dashboard'),
     url(r'^profile', views.profile, name='profile'),
-    url(r'^wallet', views.wallet, name='wallet'),
+    url(r'^wallet$', views.wallet, name='wallet'),
+    url(r'^wallet/withdraw$', views.withdraw_form, name='withdraw_form'),
+    url(r'^wallet/withdraw/confirm', views.withdraw_confirm, name='withdraw_confirm'),
+    url(r'^wallet/invest$', views.invest_select, name='invest'),
+    url(r'^wallet/invest/summary/(?P<plan_id>[0-9]+)$', views.invest_summary, name='invest_summary'),
     url(r'^referrals', views.referrals, name='referrals'),
 
     # admin pages
@@ -32,8 +36,8 @@ urlpatterns = [
     # auth management pages
     url(r'^register', views.register, name='register'),
     # url(r'^login', views.login, name='login'),
-    url(r'^accounts/', include('django.contrib.auth.urls'), name='login'),
-    # url(r'^login_user', views.authenticate_user, name='authenticate'),
+    url(r'^accounts/', include('django.contrib.auth.urls'), name='accounts'),
+    url(r'^login', views.login_view, name='login'),
     # url(r'^bots/online', views.online_bots, name='online_bots'),
     # url(r'^bots/offline', views.offline_bots, name='offline_bots'),
     # url(r'^bots/(?P<id>[0-9]{1})/', views.bot_detail, name='bot_detail'),

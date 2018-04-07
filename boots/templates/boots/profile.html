@@ -1,5 +1,6 @@
 {% extends 'user_dashboard.html' %}
 
+{% url 'profile' as 'profile_link' %}
 <!--Only stuff in blocks show-->
 
 {% block dashboard_main %}
@@ -8,32 +9,10 @@
 					<div class="card">
 						<div class="card-header" data-background-color="green">
 							<h4 class="title">Edit Profile</h4>
-							<p class="category">Complete your profile</p>
+							<p class="category">Double check the addresses to ensure no loss of coins</p>
 						</div>
-						<div class="card-content">
-							<form>
-								<div class="row">
-									<div class="col-md-12">
-										<div class="form-group label-floating">
-											<label class="control-label">Ethereum Wallet Address</label>
-											<input type="text" class="form-control" >
-										</div>
-									</div>
-								</div>
-
-								<div class="row">
-									<div class="col-md-12">
-										<div class="form-group label-floating">
-											<label class="control-label">Bitcoin Wallet Address</label>
-											<input type="text" class="form-control" >
-										</div>
-									</div>
-								</div>
-
-								<button type="submit" class="btn btn-primary pull-right">Update</button>
-								<div class="clearfix"></div>
-							</form>
-						</div>
+						<!-- Edit profile form -->
+						{% include 'components/includes/generic_dashboard_form.html' with form=edit_profile_form form_method='post' form_link=profile_link submit_text='Update' col_class='col-md-12' %}
 					</div>
 				</div>
 				<div class="col-md-4">
@@ -46,11 +25,11 @@
 
 						<div class="content">
 							<!-- <h6 class="category text-gray">Referral link: email2</h6> -->
-							<h4 class="card-title">email@gmail.com</h4>
+							<h4 class="card-title">{{ user.email }}</h4>
 							<div class="card-content">
-								<h6 style="display:inline-block;">ETH Address: </h6> 902892893993
+								<h6 style="display:inline-block;">ETH Address: </h6> {{ user.userprofile.userwallet.wallet.eth_address|default:'Not Set' }}
 								<br/>
-								<h6 style="display:inline-block;">BTC Address: </h6> 902892893993
+								<h6 style="display:inline-block;">BTC Address: </h6> {{ user.userprofile.userwallet.wallet.btc_address|default:'Not Set' }}
 							</div>
 							<!-- <a href="#pablo" class="btn btn-primary btn-round">Follow</a> -->
 						</div>

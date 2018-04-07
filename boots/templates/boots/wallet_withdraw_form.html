@@ -1,0 +1,54 @@
+{% extends 'user_dashboard.html' %}
+
+{% url 'withdraw_form' as 'form_link' %}
+<!--Only stuff in blocks show-->
+
+{% block reminder_block %}
+{% endblock reminder_block %}
+
+{% block dashboard_main %}
+			<div class="row" id="withdraw_form">
+				<div class="col-md-offset-2 col-md-8">
+					<div class="card">
+						<div class="card-header" data-background-color="purple">
+							<h4 class="title">Request Withdrawal</h4>
+							<p class="category">Double check the address and address type to ensure no loss of coins</p>
+						</div>
+						<!-- Edit profile form -->
+						{% include 'components/includes/generic_dashboard_form.html' with form=withdraw_form form_method='post' form_link=form_link submit_text='Withdraw' col_class='col-md-12' %}
+					</div>
+				</div>
+			</div>
+{% endblock dashboard_main %}
+
+{% block vue_script %}
+<script type="text/javascript">
+
+	// initialize variables
+	var coin_types = JSON.parse('{{ coin_types }}'.replace(new RegExp('&#39;', 'g'), '"'))
+
+	var pyvars = {
+		u_eth_address: '{{ user.userprofile.userwallet.wallet.eth_address }}',
+		u_btc_address: '{{ user.userprofile.userwallet.wallet.btc_address }}',
+		address: '{{ user.userprofile.userwallet.wallet.btc_address }}',
+		coin_type: coin_types['btc'],
+	}
+
+	const invest_summary = new Vue({
+		el: '#withdraw_form',
+		data () {
+			return pyvars
+		},
+		methods: {
+			change_address() {
+				if (this.coin_type == coin_types.btc) {
+					this.address = this.u_btc_address
+				} else {
+					this.address = this.u_eth_address
+				}
+			}
+		}
+	})
+
+</script>
+{% endblock vue_script %}

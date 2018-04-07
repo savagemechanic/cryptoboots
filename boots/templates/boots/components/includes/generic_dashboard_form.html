@@ -1,0 +1,16 @@
+
+<!-- Generic Dashboard form template -->
+
+<div class="card-content">
+    {% if form.errors %}
+        <!-- generic error message[login] -->
+        {{ form_error_message|default:'' }}
+    {% endif %}
+    <form action="{{ form_link }}" method="{{ form_method }}">
+        {% csrf_token %}
+        {% include 'components/includes/default_form_snippet.html' %}
+
+        <input type="submit" class="btn btn-primary pull-right" value="{{ submit_text|default:'Submit' }}"/>
+        <div class="clearfix"></div>
+    </form>
+</div>

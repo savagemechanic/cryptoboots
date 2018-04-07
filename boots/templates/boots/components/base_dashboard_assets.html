@@ -23,6 +23,7 @@
 
 	<!--   Core JS Files   -->
 	{% block js_assets %}
+	<script src="{% static_main 'js/vue.js' %}" type="text/javascript"></script>
 	<script src="{% static_main 'js/jquery-3.1.0.min.js' %}" type="text/javascript"></script>
 	<script src="{% static_main 'js/bootstrap.min.js' %}" type="text/javascript"></script>
 	<script src="{% static_main 'js/material.min.js' %}" type="text/javascript"></script>
@@ -50,5 +51,7 @@
 
     	});
 	</script>
+	{% block vue_script %}
+	{% endblock vue_script %}
 	{% endblock js_assets %}
 	

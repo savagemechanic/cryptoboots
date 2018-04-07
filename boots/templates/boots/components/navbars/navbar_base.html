@@ -5,10 +5,20 @@
 {% url 'services' as services %}
 {% url 'login' as login_link %}
 {% url 'register' as register_link %}
-{% url 'user_dashboard' as user_dashboard %}
 {% url 'wallet' as wallet_link %}
 {% url 'profile' as profile_link %}
-{% url 'logout' as profile_link %}
+{% url 'logout' as logout_link %}
+
+{% if user.userprofile.is_regular %}
+    {% url 'user_dashboard' as dashboard_home %}
+    {% url 'wallet' as wallet_link %}
+{% elif user.userprofile.is_admin %}
+    {% url 'dashboard_index' as dashboard_home %}
+    {% url 'admin_wallet' as wallet_link %}
+{% elif user.userprofile.is_superuser %}
+    {% url 'super_dashboard_index' as dashboard_home %}
+    {% url 'super_wallet' as wallet_link %}
+{% endif %}
 
 <!-- Navbar -->
 <nav class="{% block navbar_class %}navbar navbar-transparent navbar-fixed-top navbar-color-on-scroll{% endblock navbar_class %}">
@@ -38,7 +48,7 @@
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
                 <li>
-                    <a href="{{ user_dashboard }}">
+                    <a href="{{ dashboard_home }}">
                         <i class="material-icons">dashboard</i> Dashboard
                     </a>
                 </li>
@@ -64,7 +74,7 @@
                         <!-- <li class="dropdown-header">Dropdown header</li> -->
                         <li><a href="{{ profile_link }}">Profile</a></li>
                         <li class="divider"></li>
-                        <li><a href="{{ wallet_link }}">Balance: $100</a></li>
+                        <li><a href="{{ wallet_link }}">Balance: ${{ user.userprofile.userwallet.wallet.balance }}</a></li>
                         <li class="divider"></li>
                         <li><a href="{{ logout_link }}">Logout</a></li>
                     </ul>

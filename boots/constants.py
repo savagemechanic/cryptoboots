@@ -11,3 +11,8 @@ deposit_status = {
     'pending': 1,
     'completed': 2,
 }
+
+coin_types = {
+    'btc': 1,
+    'eth': 2,
+}

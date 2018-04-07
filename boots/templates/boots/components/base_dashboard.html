@@ -4,8 +4,25 @@
 {% block content %}
 	{% load panel_tags %}
 	{% url 'index' as home_link %}
-	{% url 'offline_bots' as offline_bots_link %}
-	{% url 'online_bots' as online_bots_link %}
+	{% url 'about_us' as about_link %}
+	{% url 'services' as services_link %}
+	{% url 'profile' as profile_link %}
+	{% if user.userprofile.is_regular %}
+		{% url 'user_dashboard' as dashboard_home %}
+		{% url 'referrals' as referrals_link %}
+		{% url 'wallet' as wallet_link %}
+	{% elif user.userprofile.is_admin %}
+		{% url 'dashboard_index' as dashboard_home %}
+		{% url 'admin_wallet' as wallet_link %}
+		{% url 'admin_deposits' as deposits_link %}
+		{% url 'admin_withdrawals' as withdrawal_link %}
+	{% elif user.userprofile.is_superuser %}
+		{% url 'super_dashboard_index' as dashboard_home %}
+		{% url 'super_wallet' as wallet_link %}
+		{% url 'super_deposits' as deposits_link %}
+		{% url 'super_withdrawals' as withdrawal_link %}
+		{% url 'super_users' as users_link %}
+	{% endif %}
 
 
 	<div class="wrapper">
@@ -19,43 +36,67 @@
 
 			<div class="logo">
 				<a href="{% url 'profile' %}" class="simple-text">
-					User Doe
+					{{ user.email }}
 				</a>
 			</div>
 
 	    	<div class="sidebar-wrapper">
 	            <ul class="nav">
-	                <li class="{% active_route request home_link %}">
-	                    <a href="{{ home_link }}">
+	                <li class="{% active_route request dashboard_home %}">
+	                    <a href="{{ dashboard_home }}">
 	                        <i class="material-icons">content_paste</i>
 	                        <p>Dashboard</p>
 	                    </a>
 	                </li>
-	                <li class="{% active_route request online_bots_link %}">
-	                    <a href="{% url 'wallet' %}">
-	                        <i class="material-icons">visibility</i>
+	                <li class="{% active_route request wallet_link %}">
+	                    <a href="{{ wallet_link }}">
+	                        <i class="material-icons">account_balance_wallet</i>
 	                        <p>Wallet</p>
 	                    </a>
-	                </li>
-	                <li class="{% active_route request offline_bots_link %}">
-	                    <a href="{{ offline_bots_link }}">
-	                        <i class="material-icons">do_not_disturb_on</i>
+					</li>
+					{% if user.userprofile.is_regular %}
+	                <li class="{% active_route request referrals_link %}">
+	                    <a href="{{ referrals_link }}">
+	                        <i class="material-icons">assessment</i>
+	                        <p>Referrals</p>
+	                    </a>
+					</li>
+					{% endif %}
+					{% if user.userprofile.is_admin or user.userprofile.is_superuser %}
+	                <li class="{% active_route request deposits_link %}">
+	                    <a href="{{ deposits_link }}">
+	                        <i class="material-icons">local_atm</i>
 	                        <p>Deposits</p>
 	                    </a>
 	                </li>
-	                <li class="{% active_route request offline_bots_link %}">
-	                    <a href="{{ offline_bots_link }}">
-	                        <i class="material-icons">do_not_disturb_on</i>
+	                <li class="{% active_route request withdrawal_link %}">
+	                    <a href="{{ withdrawal_link }}">
+	                        <i class="material-icons">first_page</i>
 	                        <p>Withdrawal Requests</p>
 	                    </a>
 					</li>
+					{% endif %}
 					<!-- super admin only -->
-	                <li class="{% active_route request offline_bots_link %}">
-	                    <a href="{{ offline_bots_link }}">
-	                        <i class="material-icons">do_not_disturb_on</i>
+					{% if user.userprofile.is_superuser %}
+	                <li class="{% active_route request users_link %}">
+	                    <a href="{{ users_link }}">
+	                        <i class="material-icons">wc</i>
 	                        <p>Users</p>
 	                    </a>
-	                </li>
+					</li>
+					{% endif %}
+	                <li class="{% active_route request about_link %}">
+	                    <a href="{{ about_link }}">
+	                        <i class="material-icons">info</i>
+	                        <p>About Us</p>
+	                    </a>
+					</li>
+	                <li class="{% active_route request services_link %}">
+	                    <a href="{{ services_link }}">
+	                        <i class="material-icons">assignment</i>
+	                        <p>Services</p>
+	                    </a>
+					</li>
 	            </ul>
 	    	</div>
 	    </div>
@@ -75,14 +116,14 @@
 					<div class="collapse navbar-collapse">
 						<ul class="nav navbar-nav navbar-right">
 							<li>
-								<a href="{% url 'profile' %}">
+								<a href="{{ profile_link }}">
 									<i class="material-icons">person</i>
 									<p class="hidden-lg hidden-md">Profile</p>
 								</a>
 							</li>
 							<li>
-								<a href="{% url 'wallet' %}">
-									<p>Balance: $100</p>
+								<a href="{{ wallet_link }}">
+									<p>Balance: ${{ user.userprofile.userwallet.wallet.balance }}</p>
 								</a>
 							</li>
 							<li>

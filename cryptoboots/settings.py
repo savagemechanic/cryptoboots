@@ -130,4 +130,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 STATICFILES_DIRS = ('boots/static',)
 
-LOGIN_REDIRECT_URL = '/home'
+# LOGIN_REDIRECT_URL = '/home'
+LOGOUT_REDIRECT_URL = '/app/login'

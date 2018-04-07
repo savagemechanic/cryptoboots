@@ -1,0 +1,90 @@
+{% extends 'user_dashboard.html' %}
+
+{% url 'invest_summary' as 'form_link' %}
+<!--Only stuff in blocks show-->
+
+{% block reminder_block %}
+{% endblock reminder_block %}
+
+{% block dashboard_main %}
+	<div class="row center-block" id="invest_summary">
+		<div class="col-md-offset-1 col-md-10">
+			<div class="card card-profile">
+				<!-- <div class="card-avatar">
+						<img class="img" src="../assets/img/faces/marc.jpg" />
+					
+				</div> -->
+
+				<div class="content">
+					<div class="col-md-5">
+					<h4 class="card-title">Order Summary</h4>
+					<h4 class="card-title">{{ plan.name }}</h4>
+					
+					<div class="card-content">
+						<h6 style="display:inline-block;">Earn {{ plan.percent_earning }}% in {{ plan.cashout_frequency }} days </h6>
+						<br/>
+						<h6 style="display:inline-block;">Referral Commission: {{ plan.referral_commission }}% </h6>
+						<br/>
+						<h6 style="display:inline-block;">Minimum Deposit: {{ plan.minimum_deposit }}% </h6>
+						<br/>
+						<h6 style="display:inline-block;" class="text-danger">Double check that the address is correct and matches the coin type to avoid loss of funds</h6>
+						<br/>
+						<h6 style="display:inline-block;">Address to send to: <span class="text-info"> {% templatetag openvariable %} recipient_address {% templatetag closevariable %}</span> </h6>
+					</div>
+				</div>
+				<div class="col-md-7">
+					<!-- invest form -->
+					{% include 'components/includes/generic_dashboard_form.html' with form=invest_form form_method='post' form_link=form_link submit_text='Confirm Deposit' col_class='col-md-12' %}
+					<h6 class="category text-danger">
+							<!-- description -->
+							<!-- <i class="material-icons">done_all</i> -->
+							Click confirm after transferring funds to
+							 process deposit
+						</h6>
+					<!-- <a href="{% url 'wallet' %}" class="btn btn-primary btn-round">Confirm Deposit</a> -->
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock dashboard_main %}
+
+{% block vue_script %}
+<script type="text/javascript">
+
+	// initialize variables
+	var coin_types = JSON.parse('{{ coin_types }}'.replace(new RegExp('&#39;', 'g'), '"'))
+
+	var pyvars = {
+		p_eth_address: '{{ platform_wallet.wallet.eth_address }}',
+		p_btc_address: '{{ platform_wallet.wallet.btc_address }}',
+		u_eth_address: '{{ user.userprofile.userwallet.wallet.eth_address }}',
+		u_btc_address: '{{ user.userprofile.userwallet.wallet.btc_address }}',
+		recipient_address: null,
+		sender_address: null,
+		amount: '{{ plan.minimum_deposit }}',
+		coin_type: null,
+	}
+
+	// Object.freeze(pyvars)
+
+	const invest_summary = new Vue({
+		el: '#invest_summary',
+		data () {
+			return pyvars
+		},
+		methods: {
+			change_address() {
+				if (this.coin_type == coin_types.btc) {
+					this.recipient_address = this.p_btc_address
+					this.sender_address = this.u_btc_address
+				} else {
+					this.recipient_address = this.p_eth_address
+					this.sender_address = this.u_eth_address
+				}
+			}
+		}
+	})
+
+</script>
+{% endblock vue_script %}
