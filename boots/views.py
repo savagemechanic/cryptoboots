@@ -5,13 +5,17 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login
 # from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .decorators import group_required, role_required
 from .models import User, UserProfile, Role, InvestmentPlan, Deposits, WithdrawalRequests, PlatformWallet
 from .forms import AuthForm, EditProfileForm, WithdrawForm, InvestForm
-from .constants import coin_types
+import constants
+from .helpers import login_redirect
 
+# reused vars
+platform_wallet = PlatformWallet.objects.get(id=1)
+super_wallet = PlatformWallet.objects.get(id=1)
 dummy_list_context = {
         'online_bots': 45,
         'offline_bots': 200,
@@ -47,30 +51,11 @@ def register(request):
             except Exception as e:
                 referral = None
 
-            # get or create basic user role
-            regular_role = Role.objects.get_or_create(name='regular')[0]
-
-            # create user
-            user = User.objects.create_user(email=email,
-                username=email,
-                password=password)
-
-            # get referrer is exists
-            referring_user = None
-            if referral:
-                try:
-                    referring_user = UserProfile.objects.get(referral_code=referral)
-                except Exception as e:
-                    pass
-
-            # create user profile
-            user_profile = UserProfile(user=user, role=regular_role)
-            # generate referral code
-            user_profile.referral_code = user_profile.generate_referral_code(email, user.id)
-            user_profile.referrer = referring_user
-            user_profile.save()
-            # create wallet for user
-            user_profile.create_wallet()
+            # create user and profile...
+            user_profile = UserProfile.objects.create_regular_user(email=email,
+                password=password,
+                referral_code=referral, role_objects=Role.objects)
+            user = user_profile.user
 
             # log user in
             if user is not None:
@@ -104,7 +89,7 @@ def login_view(request):
                 next_link = request.POST['next']
                 if next_link:
                     return HttpResponseRedirect(next_link)
-                return HttpResponseRedirect(reverse('user_dashboard'))
+                return login_redirect(user.userprofile)
         # Return an 'invalid login' error message.
         context = {
             'auth_form': authform,
@@ -151,10 +136,18 @@ def profile(request):
     # if request.user.userprofile.is_superuser:
     #     user_wallet = request.user.userprofile.platformwallet.wallet
     # else:
-    user_wallet = request.user.userprofile.userwallet.wallet
+    userprofile = request.user.userprofile
+    if userprofile.is_regular:
+        user_wallet = request.user.userprofile.userwallet.wallet
+    elif userprofile.is_admin:
+        user_wallet = platform_wallet.wallet
+    elif userprofile.is_superuser:
+        user_wallet = super_wallet.wallet
+
     if request.method == 'GET':
         editform = EditProfileForm(instance=user_wallet)
         context = {
+            'user_wallet': user_wallet,
             'edit_profile_form': editform,
         }
         return render(request, html, context)
@@ -164,6 +157,7 @@ def profile(request):
         if editform.is_valid():
             editform.save()
         context = {
+            'user_wallet': user_wallet,
             'edit_profile_form': editform,
         }
         return render(request, html, context)
@@ -191,12 +185,11 @@ def invest_summary(request, plan_id):
     html = 'wallet_invest_summary.html'
     html_confirm = 'wallet_invest_confirm.html'
     plan = InvestmentPlan.objects.get(id=plan_id)
-    platform_wallet = PlatformWallet.objects.get(id=1)
     form = InvestForm()
     context = {
         'plan': plan,
         'platform_wallet': platform_wallet,
-        'coin_types': coin_types,
+        'coin_types': constants.coin_types,
         'invest_form': form,
     }
     if request.method == 'GET':
@@ -230,7 +223,7 @@ def withdraw_form(request):
         form = WithdrawForm()
         context = {
             'withdraw_form': form,
-            'coin_types': coin_types,
+            'coin_types': constants.coin_types,
         }
         return render(request, html, context)
     elif request.method == 'POST':
@@ -260,56 +253,39 @@ def referrals(request):
 # @login_required(redirect_field_name='redirect_url', login_url='/login')
 def dashboard_index(request):
     html = 'dashboard.html'
-    all_bots = dummy_list_context['online_bots'] # Query All
-    online_bots = dummy_list_context['online_bots'] # Query All Online
-    offline_bots = dummy_list_context['online_bots'] # Query All Offline
-    # all_bots = list(Bot.objects.all()) # Query All
-    # online_bots = list(Bot.objects.filter(active=True)) # Query All Online
-    # offline_bots = list(Bot.objects.filter(active= not True)) # Query All Offline
     context = {
-        'online_bots': online_bots,
-        'offline_bots': offline_bots,
-        'total_bots': all_bots,
-        'bots': online_bots
+        'platformwallet': platform_wallet,
     }
     return render(request, html, context)
 
 def admin_deposits(request):
     html = 'admin_deposits.html'
-    all_bots = dummy_list_context['online_bots'] # Query All
-    online_bots = dummy_list_context['online_bots'] # Query All Online
-    offline_bots = dummy_list_context['online_bots'] # Query All Offline
+    pending_deposits = Deposits.objects.filter(status=constants.deposit_status['pending'])
+    confirmed_deposits = Deposits.objects.filter(status=constants.deposit_status['completed'])
     context = {
-        'online_bots': online_bots,
-        'offline_bots': offline_bots,
-        'total_bots': all_bots,
-        'bots': online_bots
+        'platformwallet': platform_wallet,
+        'pending_deposits': pending_deposits,
+        'confirmed_deposits': confirmed_deposits,
     }
     return render(request, html, context)
 
 def admin_withdrawals(request):
     html = 'admin_withdrawals.html'
-    all_bots = dummy_list_context['online_bots'] # Query All
-    online_bots = dummy_list_context['online_bots'] # Query All Online
-    offline_bots = dummy_list_context['online_bots'] # Query All Offline
+    pending_withdrawals = WithdrawalRequests.objects.filter(status=constants.withdrawal_request_status['pending'])
+    confirmed_withdrawals = WithdrawalRequests.objects.filter(status=constants.withdrawal_request_status['completed'])
     context = {
-        'online_bots': online_bots,
-        'offline_bots': offline_bots,
-        'total_bots': all_bots,
-        'bots': online_bots
+        'platformwallet': platform_wallet,
+        'pending_withdrawals': pending_withdrawals,
+        'confirmed_withdrawals': confirmed_withdrawals,
     }
     return render(request, html, context)
 
 def admin_wallet(request):
     html = 'admin_wallet.html'
-    all_bots = dummy_list_context['online_bots'] # Query All
-    online_bots = dummy_list_context['online_bots'] # Query All Online
-    offline_bots = dummy_list_context['online_bots'] # Query All Offline
+    plans = InvestmentPlan.objects.all()
     context = {
-        'online_bots': online_bots,
-        'offline_bots': offline_bots,
-        'total_bots': all_bots,
-        'bots': online_bots
+        'platformwallet': platform_wallet,
+        'plans': plans,
     }
     return render(request, html, context)
 
@@ -383,6 +359,23 @@ def super_users(request):
         'bots': online_bots
     }
     return render(request, html, context)
+
+# Dashboard handler
+# def dashboard_base(request):
+#     ''' Render dashboard based on user role '''
+#     userprofile = request.user.userprofile
+#     # Regular user
+#     if userprofile.is_regular:
+#         return user_dashboard(request)
+#     # Admin
+#     elif userprofile.is_admin:
+#         return dashboard_index(request)
+#     # super user
+#     elif userprofile.is_superuser:
+#         return super_dashboard_index(request)
+#     # anonymous user
+#     else:
+#         user_passes_test(False, login_url=reverse('login'))
 
 # def bot_detail(request, id):
 #     html = 'bot_detail.html'

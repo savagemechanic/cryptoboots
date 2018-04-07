@@ -2,10 +2,10 @@
 {% extends 'components/base_dashboard.html' %}
 
 {% block dashboard_content %}
-	{% url 'bot_detail' as bot_detail_link %}
 	<div class="content">
 		<div class="container-fluid">
 			<div class="row">
+				{% block dashboard_stats %}
 				<div class="col-lg-3 col-md-6 col-sm-6">
 					<div class="card card-stats">
 						<div class="card-header" data-background-color="green">
@@ -13,7 +13,7 @@
 						</div>
 						<div class="card-content">
 							<p class="category">Total Users</p>
-							<h3 class="title">{{ total_bots }}</h3>
+							<h3 class="title">{{ user.userprofile.regular_user_count }}</h3>
 						</div>
 						<div class="card-footer">
 							<div class="stats">
@@ -29,7 +29,7 @@
 						</div>
 						<div class="card-content">
 							<p class="category">Wallet Balance</p>
-							<h3 class="title">{{ online_bots }}</h3>
+							<h3 class="title">${{ platformwallet.wallet.balance|default:'0.00' }}</h3>
 						</div>
 						<div class="card-footer">
 							<div class="stats">
@@ -38,43 +38,19 @@
 						</div>
 					</div>
 				</div>
-			</div>
-			{% block dashboard_main %}
-				<div class="row">
-					<div class="col-md-12">
-						<div class="card">
-							<div class="card-header" data-background-color="purple">
-								<h4 class="title">{% block bots_table_name %}Your Bots{% endblock bots_table_name %}</h4>
-								<p class="category">{% block bots_table_description %}List of all infected computers{% endblock bots_table_description %}</p>
-							</div>
-						{% block bots_table %}
-							<div class="card-content table-responsive">
-								<table class="table">
-									<thead class="text-primary">
-										<th>Name</th>
-										<th>Country</th>
-										<th>Infection Date</th>
-									{% block last_column_header %}
-										<th></th>
-									{% endblock last_column_header %}
-									</thead>
-									<tbody>
-										<tr>
-											<td><a class="text-danger" href="{{ bot_detail_link }}{{ bot.id }}">{{ bot.name }}</a></td>
-											<td>{{ bot }}</td>
-											<td>{{ bot }}</td>
-										{% block last_column_value %}
-											<td><button class="btn btn-info">Download Passwords</button></td>
-										{% endblock last_column_value %}
-										</tr>
-									</tbody>
-								</table>
-
-							</div>
-						{% endblock bots_table %}
+				{% endblock dashboard_stats %}
+				{% block reminder_block %}
+				<!-- <div class="col-lg-12">
+					<div class="card">
+						<div class="card-content">
+							<p class="category">Referral Link</p>
+							<h3 class="title">{% url 'register' %}?referrer={{ user.userprofile.referral_code }}</h3>
 						</div>
 					</div>
-				</div>
+				</div> -->
+				{% endblock reminder_block %}
+			</div>
+			{% block dashboard_main %}
 			{% endblock dashboard_main %}
 		</div>
 	</div>

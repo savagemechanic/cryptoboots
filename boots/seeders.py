@@ -12,11 +12,11 @@ from .models import Role, InvestmentPlan, PlatformWallet, Wallet, UserProfile
 def seed_all():
     # Roles
     # basic
-    regular_role = Role.objects.get_or_create(name='regular')
+    regular_role = Role.objects.get_regular_role()
     # admin
-    admin_role = Role.objects.get_or_create(name='admin')
+    admin_role = Role.objects.get_admin_role()
     # super
-    superuser_role = Role.objects.get_or_create(name='superuser')
+    superuser_role = Role.objects.get_super_role()
 
     # Investment Plans
     bronze = InvestmentPlan.objects.get_or_create(name='Bronze Plan',
@@ -40,11 +40,11 @@ def seed_all():
 
     # Wallets
     wallet = Wallet.objects.get_or_create(eth_address='hfg4849784hrjj4747',
-        btc_address="hfg4849784hrjj4747")
+        btc_address="hfg4849784hrjj4747")[0]
     platform_wallet = PlatformWallet.objects.get_or_create(
-        wallet=wallet[0])
+        wallet=wallet)[0]
 
-
+seed_all()
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cryptoboots.settings")
     seed_all()

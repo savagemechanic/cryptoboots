@@ -27,9 +27,9 @@
 							<!-- <h6 class="category text-gray">Referral link: email2</h6> -->
 							<h4 class="card-title">{{ user.email }}</h4>
 							<div class="card-content">
-								<h6 style="display:inline-block;">ETH Address: </h6> {{ user.userprofile.userwallet.wallet.eth_address|default:'Not Set' }}
+								<h6 style="display:inline-block;">ETH Address: </h6> {{ user_wallet.eth_address|default:'Not Set' }}
 								<br/>
-								<h6 style="display:inline-block;">BTC Address: </h6> {{ user.userprofile.userwallet.wallet.btc_address|default:'Not Set' }}
+								<h6 style="display:inline-block;">BTC Address: </h6> {{ user_wallet.btc_address|default:'Not Set' }}
 							</div>
 							<!-- <a href="#pablo" class="btn btn-primary btn-round">Follow</a> -->
 						</div>

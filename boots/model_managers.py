@@ -1,55 +1,59 @@
 
 from django.db import models
-from .models import User
+from django.contrib.auth.models import User
 
 class RoleManager(models.Manager):
-    def get_admin():
-        return self.get_or_create('admin')[0]
+    def get_admin_role(self):
+        return self.get_or_create(name='admin')[0]
 
-    def get_super_user():
-        return self.get_or_create('superuser')[0]
+    def get_super_role(self):
+        return self.get_or_create(name='superuser')[0]
 
-    def get_regular_user():
-        return self.get_or_create('regular')[0]
+    def get_regular_role(self):
+        return self.get_or_create(name='regular')[0]
 
 
 class UserProfileManager(models.Manager):
-    def create_user_with_role(email, password, role=None):
+    def create_user_with_role(self, email, password, role=None,
+        use_referral_code=False):
         # create user
         user = User.objects.create_user(email=email,
                 username=email,
                 password=password)
         # create user profile
-        user_profile = self.create(user=user, role=role)
+        if use_referral_code:
+            user_profile = self.create(user=user, role=role, referral_code=email)
+        else:
+            user_profile = self.create(user=user, role=role)
         return user_profile
 
-    def create_admin(email, password, role=None):
+    def create_admin(self, email, password, role=None, role_objects=None):
         if not role:
-            admin_role = Role.objects.get_admin()
+            admin_role = role_objects.get_admin_role()
         else:
             admin_role = role
 
         # create user and profile
         return self.create_user_with_role(email=email,
-            password=password, role=admin_role)
+            password=password, role=admin_role, use_referral_code=True)
     
-    def create_super_user(email, password, role=None):
+    def create_super_user(self, email, password, role=None, role_objects=None):
         if not role:
-            super_role = Role.objects.get_super_user()
+            super_role = role_objects.get_super_role()
         else:
             super_role = role
 
         # create user and profile
         return self.create_user_with_role(email=email,
-            password=password, role=super_role)
+            password=password, role=super_role, use_referral_code=True)
     
-    def create_regular_user(email, password, role=None, referral_code=None):
+    def create_regular_user(self, email, password, role=None, referral_code=None, role_objects=None):
         ''' Create a basic user with the referrer and wallet and 
         generate referral code
         @returns: UserProfile object '''
         # get or create regular role
         if not role:
-            user_role = Role.objects.get_regular_user()
+            user_role = role_objects.get_regular_role()
         else:
             user_role = role
 
@@ -74,3 +78,6 @@ class UserProfileManager(models.Manager):
         user_profile.create_wallet()
 
         return user_profile
+
+    def get_users_by_role(self, role):
+        return self.filter(role=role)

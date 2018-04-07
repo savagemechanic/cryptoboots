@@ -7,7 +7,7 @@ import datetime
 from django.contrib.auth.models import User
 
 from constants import withdrawal_request_status, deposit_status, coin_types
-
+from .model_managers import RoleManager, UserProfileManager
 # helpers
 class AutoDateTimeField(models.DateTimeField):
     def pre_save(self, model_instance, add):
@@ -45,6 +45,7 @@ class Role(models.Model):
   name = models.CharField(blank=False, unique=True, max_length=50)
   created_at = models.DateTimeField(default=timezone.now, editable=False)
   updated_at = AutoDateTimeField(default=timezone.now, editable=False)
+  objects = RoleManager()
 
   class Meta():
     app_label = 'boots'
@@ -80,6 +81,7 @@ class UserProfile(models.Model):#One-to-One [Each bot has a user]
   referrer = models.ForeignKey('UserProfile', on_delete=models.CASCADE, null=True) # user that referred this user
   investment_plans = models.ManyToManyField(InvestmentPlan)
   payee_type = models.IntegerField(blank=True, null=True)
+  objects = UserProfileManager()
 
   def generate_referral_code(self, email, user_id):
     return email.split('@')[0] + str(user_id)
@@ -104,6 +106,11 @@ class UserProfile(models.Model):#One-to-One [Each bot has a user]
   @property
   def is_superuser(self):
     return self.role.name == 'superuser'
+
+  @property
+  def regular_user_count(self):
+    reg_users = UserProfile.objects.get_users_by_role(role=Role.objects.get_regular_role())
+    return len(reg_users)
 
   class Meta():
     app_label = 'boots'

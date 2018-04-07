@@ -121,11 +121,13 @@
 									<p class="hidden-lg hidden-md">Profile</p>
 								</a>
 							</li>
+							{% if user.userprofile.is_regular %}
 							<li>
 								<a href="{{ wallet_link }}">
 									<p>Balance: ${{ user.userprofile.userwallet.wallet.balance }}</p>
 								</a>
 							</li>
+							{% endif %}
 							<li>
 								<a href="{% url 'logout' %}">
 									<p class="">Logout</p>

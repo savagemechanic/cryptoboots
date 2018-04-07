@@ -2,30 +2,93 @@
 
 <!--Only stuff in blocks show-->
 
+{% block dashboard_main %}
 <div class="row">
 	<div class="col-md-12">
 		<div class="card">
 			<div class="card-header" data-background-color="purple">
-				<h4 class="title">{% block bots_table_name %}Offline Bots{% endblock bots_table_name %}</h4>
-				<p class="category">{% block bots_table_description %}List of all offline infected computers{% endblock bots_table_description %}</p>
+				<h4 class="title">Pending Deposits</h4>
+				<p class="category">All pending deposits</p>
 			</div>
-			<!--Dummy Table-->
+			
 			<div class="card-content table-responsive">
 				<table class="table">
 					<thead class="text-primary">
-						<th>Name</th>
-						<th>Country</th>
-						<th>Infection Date</th>
+						<th>User</th>
+						<th>Amount</th>
+						<th>Coin</th>
+						<th>Sender Address</th>
+						<th>Recipient Address</th>
+						<th>Investment Plan</th>
+						<th>Status</th>
+						<th>Date</th>
+						<th></th>
 					</thead>
 					<tbody>
+						{% for deposit in pending_deposits %}
 						<tr>
-							<td>Dakota Rice</td>
-							<td>Niger</td>
-							<td>15, Jul 2015</td>
-							{% block last_column_value %}
-								<td><button class="btn btn-danger">Delete Bot</button></td>
-							{% endblock last_column_value %}
+							<td>{{ deposit.user.user.email }}</td>
+							<td>${{ deposit.amount }}</td>
+							<td>{{ deposit.coin_type_name }}</td>
+							<td>{{ deposit.sender_address }}</td>
+							<td>{{ deposit.recipient_address }}</td>
+							<td>{{ deposit.investment_plan.name }}</td>
+							<td>{{ deposit.status_name }}</td>
+							<td>{{ deposit.created_at }}</td>
+							<td>
+								<a href="{% url 'admin_deposit_detail' deposit_id=deposit.id %}">
+								<i class="material-icons">remove_red_eye</i>
+								</a>	
+							</td>
 						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+
+			</div>
+		</div>
+	</div>
+
+
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-header" data-background-color="purple">
+				<h4 class="title">Confirmed Deposits</h4>
+				<p class="category">All confirmed deposits</p>
+			</div>
+			
+			<div class="card-content table-responsive">
+				<table class="table">
+					<thead class="text-primary">
+						<th>User</th>
+						<th>Amount</th>
+						<th>Coin</th>
+						<th>Sender Address</th>
+						<th>Recipient Address</th>
+						<th>Investment Plan</th>
+						<th>Status</th>
+						<th>Date</th>
+						<th></th>
+					</thead>
+					<tbody>
+						{% for deposit in confirmed_deposits %}
+						<tr>
+							<!-- <td><a class="text-danger" href="{{ bot_detail_link }}{{ bot.id }}">{{ bot.name }}</a></td> -->
+							<td>{{ deposit.user.user.email }}</td>
+							<td>${{ deposit.amount }}</td>
+							<td>{{ deposit.coin_type_name }}</td>
+							<td>{{ deposit.sender_address }}</td>
+							<td>{{ deposit.recipient_address }}</td>
+							<td>{{ deposit.investment_plan.name }}</td>
+							<td>{{ deposit.status_name }}</td>
+							<td>{{ deposit.created_at }}</td>
+							<td>
+								<a href="{% url 'admin_deposit_detail' deposit_id=deposit.id %}">
+								<i class="material-icons">remove_red_eye</i>
+								</a>	
+							</td>
+						</tr>
+						{% endfor %}
 					</tbody>
 				</table>
 
@@ -33,3 +96,4 @@
 		</div>
 	</div>
 </div>
+{% endblock dashboard_main %}

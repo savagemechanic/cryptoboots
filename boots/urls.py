@@ -21,13 +21,15 @@ urlpatterns = [
     url(r'^referrals', views.referrals, name='referrals'),
 
     # admin pages
-    url(r'^admin', views.dashboard_index, name='dashboard_index'),
-    url(r'^admin/deposits', views.admin_deposits, name='admin_deposits'),
-    url(r'^admin/withdrawals', views.admin_withdrawals, name='admin_withdrawals'),
+    url(r'^admin/home', views.dashboard_index, name='dashboard_index'),
+    url(r'^admin/deposits$', views.admin_deposits, name='admin_deposits'),
+    url(r'^admin/deposits/(?P<deposit_id>[0-9]+)$', views.admin_deposits, name='admin_deposit_detail'),
+    url(r'^admin/withdrawals$', views.admin_withdrawals, name='admin_withdrawals'),
+    url(r'^admin/withdrawals/(?P<withdrawal_id>[0-9]+)$', views.admin_withdrawals, name='admin_withdrawal_detail'),
     url(r'^admin/wallet', views.admin_wallet, name='admin_wallet'),
 
     # super admin
-    url(r'^super_admin', views.super_dashboard_index, name='super_dashboard_index'),
+    url(r'^super_admin/home', views.super_dashboard_index, name='super_dashboard_index'),
     url(r'^super_admin/deposits', views.super_deposits, name='super_deposits'),
     url(r'^super_admin/withdrawals', views.super_withdrawals, name='super_withdrawals'),
     url(r'^super_admin/wallet', views.super_wallet, name='super_wallet'),

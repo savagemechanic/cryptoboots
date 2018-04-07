@@ -2,29 +2,87 @@
 
 <!--Only stuff in blocks show-->
 
+{% block dashboard_main %}
 <div class="row">
 	<div class="col-md-12">
 		<div class="card">
-			<div class="card-header" data-background-color="purple">
-				<h4 class="title">{% block bots_table_name %}Offline Bots{% endblock bots_table_name %}</h4>
-				<p class="category">{% block bots_table_description %}List of all offline infected computers{% endblock bots_table_description %}</p>
+			<div class="card-header" data-background-color="red">
+				<h4 class="title">Pending Withdrawals</h4>
+				<p class="category">All pending withdrawals</p>
 			</div>
-			<!--Dummy Table-->
+			
 			<div class="card-content table-responsive">
 				<table class="table">
 					<thead class="text-primary">
-						<th>Name</th>
-						<th>Country</th>
-						<th>Infection Date</th>
+						<th>User</th>
+						<th>Amount</th>
+						<th>Coin</th>
+						<th>Address</th>
+						<th>Status</th>
+						<th>Date</th>
+						<th></th>
 					</thead>
 					<tbody>
 						<tr>
-							<td>Dakota Rice</td>
-							<td>Niger</td>
-							<td>15, Jul 2015</td>
-							{% block last_column_value %}
-								<td><button class="btn btn-danger">Delete Bot</button></td>
-							{% endblock last_column_value %}
+							{% for withdrawal in pending_withdrawals %}
+							<tr>
+								<td>{{ withdrawal.user.user.email }}</td>
+								<td>${{ withdrawal.amount }}</td>
+								<td>{{ withdrawal.coin_type_name }}</td>
+								<td>{{ withdrawal.address }}</td>
+								<td>{{ withdrawal.status_name }}</td>
+								<td>{{ withdrawal.created_at }}</td>
+								<td>
+									<a href="{% url 'admin_withdrawal_detail' withdrawal_id=withdrawal.id %}">
+									<i class="material-icons">remove_red_eye</i>
+									</a>	
+								</td>
+							</tr>
+							{% endfor %}
+						</tr>
+					</tbody>
+				</table>
+
+			</div>
+		</div>
+	</div>
+
+
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-header" data-background-color="red">
+				<h4 class="title">Confirmed Withdrawals</h4>
+				<p class="category">All confirmed withdrawals</p>
+			</div>
+			
+			<div class="card-content table-responsive">
+				<table class="table">
+					<thead class="text-primary">
+						<th>User</th>
+						<th>Amount</th>
+						<th>Coin</th>
+						<th>Address</th>
+						<th>Status</th>
+						<th>Date</th>
+						<th></th>
+					</thead>
+					<tbody>
+						<tr>
+							{% for withdrawal in confirmed_withdrawals %}
+							<tr>
+								<td>{{ withdrawal.user.user.email }}</td>
+								<td>${{ withdrawal.amount }}</td>
+								<td>{{ withdrawal.coin_type_name }}</td>
+								<td>{{ withdrawal.address }}</td>
+								<td>{{ withdrawal.status_name }}</td>
+								<td>{{ withdrawal.created_at }}</td>
+								<td>
+									<a href="{% url 'admin_withdrawal_detail' withdrawal_id=withdrawal.id %}">
+									<i class="material-icons">remove_red_eye</i>
+									</a>	
+								</td>
+							</tr>
+							{% endfor %}
 						</tr>
 					</tbody>
 				</table>
@@ -33,3 +91,4 @@
 		</div>
 	</div>
 </div>
+{% endblock dashboard_main %}
