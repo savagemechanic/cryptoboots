@@ -16,18 +16,6 @@ from .helpers import login_redirect
 # reused vars
 platform_wallet = PlatformWallet.objects.get(id=1)
 super_wallet = PlatformWallet.objects.get(id=1)
-dummy_list_context = {
-        'online_bots': 45,
-        'offline_bots': 200,
-        'total_bots': 245,
-        'notifications': [
-            'Mike John responded to your email',
-            'You have 5 new tasks',
-            'You\'re now friend with Andrew',
-            'Another Notification',
-            'Another One',
-        ],
-}
 
 # Create your views here.
 # AUTH PAGES
