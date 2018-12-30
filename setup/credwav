@@ -3,7 +3,7 @@
 
 server {
     listen 8081;
-    server_name 84.38.134.132;
+    server_name _;
 
     location = favicon.ico { access_log off; log_not_found off; }
     location /static/ {
