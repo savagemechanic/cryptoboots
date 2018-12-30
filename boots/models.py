@@ -6,7 +6,7 @@ from django.utils import timezone
 import datetime
 from django.contrib.auth.models import User
 
-from constants import withdrawal_request_status, deposit_status, coin_types
+from constants import withdrawal_request_status, deposit_status, coin_types, investment_status
 from .model_managers import RoleManager, UserProfileManager
 # helpers
 class AutoDateTimeField(models.DateTimeField):
@@ -119,6 +119,33 @@ class UserProfile(models.Model):#One-to-One [Each bot has a user]
     ('can_view_super_admin_dashboard', 'To view super admin dashboard'))
 
 
+class ActiveInvestments(models.Model):
+  user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+  investment_plan = models.ForeignKey(InvestmentPlan, on_delete=models.CASCADE)
+  invested_amount = models.DecimalField(max_digits=19, decimal_places=2, blank=False, null=False)
+  status = models.IntegerField(default=investment_status['active'])
+  created_at = models.DateTimeField(default=timezone.now, editable=False)
+  updated_at = AutoDateTimeField(default=timezone.now, editable=False)
+
+  @property
+  def days_taken(self):
+    ''' Days used up on plan '''
+    days_taken = datetime.datetime(self.created_at) - datetime.datetime.now()
+    return days_taken.days()
+
+  @property
+  def days_left(self):
+    ''' Days left to cashout '''
+    days_left = self.investment_plan.cashout_frequency - self.days_taken
+    return days_left
+
+  @property
+  def profit(self):
+    ''' Amount gained since plan activation *** '''
+    days_left = self.investment_plan.cashout_frequency - self.days_taken
+    return days_left
+
+
 class WithdrawalRequests(models.Model):
   user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
   amount = models.DecimalField(max_digits=19, decimal_places=2, blank=False, null=False)
@@ -135,6 +162,14 @@ class WithdrawalRequests(models.Model):
   @property
   def status_name(self):
     return get_matching_key(self.status, withdrawal_request_status, upper=True)
+
+  @property
+  def is_confirmed(self):
+    return self.status == withdrawal_request_status['completed']
+
+  @property
+  def is_pending(self):
+    return self.status == withdrawal_request_status['pending']
 
   class Meta():
     app_label = 'boots'
@@ -158,6 +193,14 @@ class Deposits(models.Model):
   @property
   def status_name(self):
     return get_matching_key(self.status, deposit_status, upper=True)
+
+  @property
+  def is_confirmed(self):
+    return self.status == deposit_status['completed']
+
+  @property
+  def is_pending(self):
+    return self.status == deposit_status['pending']
 
   class Meta():
     app_label = 'boots'

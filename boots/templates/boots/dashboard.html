@@ -51,6 +51,38 @@
 				{% endblock reminder_block %}
 			</div>
 			{% block dashboard_main %}
+			<div class="row center-block">
+				<h4 class="text-center">Investment Plans</h4>
+				{% for plan in plans %}
+				<a href="{% url 'invest_summary' plan_id=plan.id %}">
+					<div class="col-md-4">
+						<div class="card card-profile">
+							<!-- <div class="card-avatar">
+									<img class="img" src="../assets/img/faces/marc.jpg" />
+								
+							</div> -->
+		
+							<div class="content">
+								<h4 class="card-title">{{ plan.name }}</h4>
+								<h6 class="category">
+									<!-- description -->
+									<!-- <i class="material-icons">done_all</i> -->
+									{{ plan.description|default:'' }}
+								</h6>
+								<div class="card-content">
+									<h6 style="display:inline-block;">Earn {{ plan.percent_earning }}% in {{ plan.cashout_frequency }} days </h6>
+									<br/>
+									<h6 style="display:inline-block;">Minimum Deposit: ${{ plan.minimum_deposit }} </h6>
+									<h6 style="display:inline-block;">Referral Commission: {{ plan.referral_commission }}% </h6>
+									<h6 style="display:inline-block;">Users On Plan: {{ plan.referral_commission }}% </h6>
+								</div>
+								<!-- <a href="{% url 'wallet' %}" class="btn btn-primary btn-round">Go Back</a> -->
+							</div>
+						</div>
+					</div>
+				</a>
+				{% endfor %}
+			</div>
 			{% endblock dashboard_main %}
 		</div>
 	</div>

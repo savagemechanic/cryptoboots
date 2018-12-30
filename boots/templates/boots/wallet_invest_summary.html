@@ -25,7 +25,7 @@
 						<br/>
 						<h6 style="display:inline-block;">Referral Commission: {{ plan.referral_commission }}% </h6>
 						<br/>
-						<h6 style="display:inline-block;">Minimum Deposit: {{ plan.minimum_deposit }}% </h6>
+						<h6 style="display:inline-block;">Minimum Deposit: {{ plan.minimum_deposit }} </h6>
 						<br/>
 						<h6 style="display:inline-block;" class="text-danger">Double check that the address is correct and matches the coin type to avoid loss of funds</h6>
 						<br/>
@@ -56,10 +56,10 @@
 	var coin_types = JSON.parse('{{ coin_types }}'.replace(new RegExp('&#39;', 'g'), '"'))
 
 	var pyvars = {
-		p_eth_address: '{{ platform_wallet.wallet.eth_address }}',
-		p_btc_address: '{{ platform_wallet.wallet.btc_address }}',
-		u_eth_address: '{{ user.userprofile.userwallet.wallet.eth_address }}',
-		u_btc_address: '{{ user.userprofile.userwallet.wallet.btc_address }}',
+		p_eth_address: '{{ platform_wallet.wallet.eth_address|default:"" }}',
+		p_btc_address: '{{ platform_wallet.wallet.btc_address|default:"" }}',
+		u_eth_address: '{{ user.userprofile.userwallet.wallet.eth_address|default:"" }}',
+		u_btc_address: '{{ user.userprofile.userwallet.wallet.btc_address|default:"" }}',
 		recipient_address: null,
 		sender_address: null,
 		amount: '{{ plan.minimum_deposit }}',

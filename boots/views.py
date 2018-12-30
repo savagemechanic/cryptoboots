@@ -253,7 +253,9 @@ def referrals(request):
 # @login_required(redirect_field_name='redirect_url', login_url='/login')
 def dashboard_index(request):
     html = 'dashboard.html'
+    plans = InvestmentPlan.objects.all()
     context = {
+        'plans': plans,
         'platformwallet': platform_wallet,
     }
     return render(request, html, context)
@@ -269,6 +271,25 @@ def admin_deposits(request):
     }
     return render(request, html, context)
 
+def admin_deposit_detail(request, deposit_id):
+    html = 'admin_deposit_detail.html'
+    deposit = Deposits.objects.get(id=deposit_id)
+    context = {
+        'platformwallet': platform_wallet,
+        'deposit': deposit,
+    }
+    return render(request, html, context)
+
+def admin_confirm_deposit(request, deposit_id):
+    html = 'admin_confirm_deposit.html'
+    deposit = Deposits.objects.get(id=deposit_id)
+    context = {
+        'platformwallet': platform_wallet,
+        'deposit': deposit,
+    }
+    # change deposit status and add active investment
+    return render(request, html, context)
+
 def admin_withdrawals(request):
     html = 'admin_withdrawals.html'
     pending_withdrawals = WithdrawalRequests.objects.filter(status=constants.withdrawal_request_status['pending'])
@@ -278,6 +299,25 @@ def admin_withdrawals(request):
         'pending_withdrawals': pending_withdrawals,
         'confirmed_withdrawals': confirmed_withdrawals,
     }
+    return render(request, html, context)
+
+def admin_withdrawal_detail(request, withdrawal_id):
+    html = 'admin_withdrawal_detail.html'
+    withdrawal = WithdrawalRequests.objects.get(id=withdrawal_id)
+    context = {
+        'platformwallet': platform_wallet,
+        'withdrawal': withdrawal,
+    }
+    return render(request, html, context)
+
+def admin_confirm_withdrawal(request, withdrawal_id):
+    html = 'admin_confirm_withdrawal.html'
+    withdrawal = WithdrawalRequests.objects.get(id=withdrawal_id)
+    context = {
+        'platformwallet': platform_wallet,
+        'withdrawal': withdrawal,
+    }
+    # change withdrawal status
     return render(request, html, context)
 
 def admin_wallet(request):
@@ -294,69 +334,50 @@ def admin_wallet(request):
 # @login_required(redirect_field_name='redirect_url', login_url='/login')
 def super_dashboard_index(request):
     html = 'super_dashboard.html'
-    all_bots = dummy_list_context['online_bots'] # Query All
-    online_bots = dummy_list_context['online_bots'] # Query All Online
-    offline_bots = dummy_list_context['online_bots'] # Query All Offline
-    # all_bots = list(Bot.objects.all()) # Query All
-    # online_bots = list(Bot.objects.filter(active=True)) # Query All Online
-    # offline_bots = list(Bot.objects.filter(active= not True)) # Query All Offline
+    plans = InvestmentPlan.objects.all()
     context = {
-        'online_bots': online_bots,
-        'offline_bots': offline_bots,
-        'total_bots': all_bots,
-        'bots': online_bots
+        'plans': plans,
+        'superwallet': super_wallet,
     }
     return render(request, html, context)
 
 def super_deposits(request):
     html = 'super_deposits.html'
-    all_bots = dummy_list_context['online_bots'] # Query All
-    online_bots = dummy_list_context['online_bots'] # Query All Online
-    offline_bots = dummy_list_context['online_bots'] # Query All Offline
+    pending_deposits = Deposits.objects.filter(status=constants.deposit_status['pending'])
+    confirmed_deposits = Deposits.objects.filter(status=constants.deposit_status['completed'])
     context = {
-        'online_bots': online_bots,
-        'offline_bots': offline_bots,
-        'total_bots': all_bots,
-        'bots': online_bots
+        'superwallet': super_wallet,
+        'pending_deposits': pending_deposits,
+        'confirmed_deposits': confirmed_deposits,
     }
     return render(request, html, context)
 
 def super_withdrawals(request):
     html = 'super_withdrawals.html'
-    all_bots = dummy_list_context['online_bots'] # Query All
-    online_bots = dummy_list_context['online_bots'] # Query All Online
-    offline_bots = dummy_list_context['online_bots'] # Query All Offline
+    pending_withdrawals = WithdrawalRequests.objects.filter(status=constants.withdrawal_request_status['pending'])
+    confirmed_withdrawals = WithdrawalRequests.objects.filter(status=constants.withdrawal_request_status['completed'])
     context = {
-        'online_bots': online_bots,
-        'offline_bots': offline_bots,
-        'total_bots': all_bots,
-        'bots': online_bots
+        'superwallet': super_wallet,
+        'pending_withdrawals': pending_withdrawals,
+        'confirmed_withdrawals': confirmed_withdrawals,
     }
     return render(request, html, context)
 
 def super_wallet(request):
     html = 'super_wallet.html'
-    all_bots = dummy_list_context['online_bots'] # Query All
-    online_bots = dummy_list_context['online_bots'] # Query All Online
-    offline_bots = dummy_list_context['online_bots'] # Query All Offline
+    plans = InvestmentPlan.objects.all()
     context = {
-        'online_bots': online_bots,
-        'offline_bots': offline_bots,
-        'total_bots': all_bots,
-        'bots': online_bots
+        'superwallet': super_wallet,
+        'plans': plans,
     }
     return render(request, html, context)
 
 def super_users(request):
     html = 'super_users.html'
-    all_bots = dummy_list_context['online_bots'] # Query All
-    online_bots = dummy_list_context['online_bots'] # Query All Online
-    offline_bots = dummy_list_context['online_bots'] # Query All Offline
+    users = UserProfile.objects.all() # Users
     context = {
-        'online_bots': online_bots,
-        'offline_bots': offline_bots,
-        'total_bots': all_bots,
-        'bots': online_bots
+        'superwallet': super_wallet,
+        'users': users,
     }
     return render(request, html, context)
 

@@ -1,35 +1,94 @@
-{% extends 'dashboard.html' %}
-
+{% extends 'super_dashboard.html' %}
+{% load panel_tags %}
 <!--Only stuff in blocks show-->
 
-<div class="row">
-	<div class="col-md-12">
-		<div class="card">
-			<div class="card-header" data-background-color="purple">
-				<h4 class="title">{% block bots_table_name %}Offline Bots{% endblock bots_table_name %}</h4>
-				<p class="category">{% block bots_table_description %}List of all offline infected computers{% endblock bots_table_description %}</p>
-			</div>
-			<!--Dummy Table-->
-			<div class="card-content table-responsive">
-				<table class="table">
-					<thead class="text-primary">
-						<th>Name</th>
-						<th>Country</th>
-						<th>Infection Date</th>
-					</thead>
-					<tbody>
-						<tr>
-							<td>Dakota Rice</td>
-							<td>Niger</td>
-							<td>15, Jul 2015</td>
-							{% block last_column_value %}
-								<td><button class="btn btn-danger">Delete Bot</button></td>
-							{% endblock last_column_value %}
-						</tr>
-					</tbody>
-				</table>
 
+{% block dashboard_main %}
+	<div class="row">
+		<div class="col-md-7" id="calculate_earnings">
+			<div class="card">
+					<div class="card-header" data-background-color="purple">
+						<h4 class="title">Calculate Earnings</h4>
+						<p class="category">Estimate earnings on current investment plans</p>
+					</div>
+					<div class="card-content">
+						<div class="col-md-5">
+							<div class="form-group label-floating">
+								<label class="control-label">Select Plans</label>
+								<select class="form-control" multiple v-model="selected_plans">
+									{% for plan in plans %}
+									<option value="{{plan.id}}">{{ plan.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							
+						<!-- <h4 style="display:inline-block;">Select Plans </h4>
+						<br/> -->
+					</div>
+					<div class="col-md-offset-2 col-md-5">
+						<div class="row">
+							<div class="form-group label-floating">
+								<p class="text-danger" v-text="error"></p>
+								<label class="control-label">Amount</label>
+								<input type="number" class="form-control" v-model="amount"/>
+							</div>
+						</div>
+						<div class="row">
+							<div class="form-group label-floating">
+								<label class="control-label">Days</label>
+								<input type="number" class="form-control" v-model="days"/>
+							</div>
+						</div>
+						<h6 style="display:inline-block;"> Total Earning:
+							<b>$<span class="" v-text="total_earning"></span></b>
+						</h6>
+						<!-- <h4 style="display:inline-block;">Select Plans </h4> -->
+					</div>
+
+					</div>
+				</div>
+		</div>
+		<div class="col-md-5">
+			<div class="card card-profile">
+				<!-- <div class="card-avatar">
+					<a href="#pablo">
+						<img class="img" src="../assets/img/faces/marc.jpg" />
+					</a>
+				</div> -->
+				<!-- <div class="card-header" data-background-color="purple">
+					<h4 class="title">Wallet Details</h4>
+					<p class="category">List of all transactions</p>
+				</div> -->
+
+				<div class="content">
+					<!-- <h6 class="category text-gray">Referral link: email2</h6> -->
+					<h4 class="card-title">Wallet Details</h4>
+					<div class="card-content">
+						<h6 style="display:inline-block;">ETH Address: </h6> {{ superwallet.wallet.eth_address|default:'Not Set' }}
+						<br/>
+						<h6 style="display:inline-block;">BTC Address: </h6> {{ superwallet.wallet.btc_address|default:'Not Set' }}
+					</div>
+					<a href="{% url 'profile' %}" class="btn btn-primary btn-default">Edit</a>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+{% endblock dashboard_main %}
+
+{% block vue_script %}
+<script type="text/javascript">
+
+	// initialize variables
+	var plans = []
+	{% for plan in plans %}
+		plans.push({
+			id: {{ plan.id }},
+			name: '{{ plan.name }}',
+			minimum_deposit: {{ plan.minimum_deposit }},
+			percent_earning: {{ plan.percent_earning }},
+			cashout_frequency: {{ plan.cashout_frequency }},
+		})
+	{% endfor %}
+</script>
+<script src="{% static_main 'js/vue_components/calculate_earnings.js' %}"></script>
+{% endblock vue_script %}

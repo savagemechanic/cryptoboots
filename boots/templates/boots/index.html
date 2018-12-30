@@ -16,6 +16,8 @@
 	{% include 'components/includes/header_filter.html' %}
 {% endblock header %}
 
+{% load panel_tags %}
+
 </div>
 </div>
 
@@ -25,8 +27,10 @@
 			<div class="section text-center section-landing">
 				<div class="row">
 					<div class="col-md-8 col-md-offset-2">
-						<h2 class="title">Let's talk product</h2>
-						<h5 class="description">This is the paragraph where you can write more details about your product. Keep you user engaged by providing meaningful information. Remember that by this time, the user is curious, otherwise he wouldn't scroll to get here. Add a button if you want the user to see more.</h5>
+						<h2 class="title">About Us</h2>
+						<h5 class="description">
+							Coin Boost, a fund manager located in La Jolla, CA, focuses primarily on managing investment portfolios of digital currencies and related assets through fund structures designed for investment by US and Non-US high net worth individuals and institutional investors. Certain fund strategies may pursue strategic investments in promising early-stage blockchain projects.
+						</h5>
 					</div>
 				</div>
 
@@ -37,8 +41,11 @@
 								<div class="icon icon-primary">
 									<i class="material-icons">chat</i>
 								</div>
-								<h4 class="info-title">First Feature</h4>
-								<p>Divide details about your product or agency work into parts. Write a few lines about each one. A paragraph describing a feature will be enough.</p>
+								<h4 class="info-title">Professional Fund Management</h4>
+								<p>
+									Coin Boost offers ease of access by qualified high-net-worth individuals and institutions seeking exposure to a portfolio of digital assets managed by highly-experienced managers, traders and analysts in the crypto space. 
+									Funds offered by Coin Boost provide exposure to digital assets through a single fund investment, eliminating the hassle of maintaining multiple public and private keys, wallets, exchange accounts, and often varied and complex tax documentation.
+								</p>
 							</div>
 						</div>
 						<div class="col-md-4">
@@ -46,8 +53,11 @@
 								<div class="icon icon-success">
 									<i class="material-icons">verified_user</i>
 								</div>
-								<h4 class="info-title">Second Feature</h4>
-								<p>Divide details about your product or agency work into parts. Write a few lines about each one. A paragraph describing a feature will be enough.</p>
+								<h4 class="info-title">Active ETH & BTC Management</h4>
+								<p>
+									For firms that have recently completed a successful ICO and hold significant Ether (ETH) or Bitcoin (BTC) reserves or anyone with significant ETH or BTC holdings, Coin Boost believes a passive hold strategy can pose undue market risk considering the extremely volatile nature of the digital currency markets. 
+									Investment of all or a portion of such currency holdings in fund strategies that in turn will trade, invest and/or lend across multiple digital asset classes, and are actively managed by Coin Boost’s dedicated team of experienced professionals, may offer a more attractive risk alternative to those holding significant uninvested ETH or BTC.
+								</p>
 							</div>
 						</div>
 						<div class="col-md-4">
@@ -55,8 +65,12 @@
 								<div class="icon icon-danger">
 									<i class="material-icons">fingerprint</i>
 								</div>
-								<h4 class="info-title">Third Feature</h4>
-								<p>Divide details about your product or agency work into parts. Write a few lines about each one. A paragraph describing a feature will be enough.</p>
+								<h4 class="info-title">Early Stage Blockchain Investing</h4>
+								<p>
+									Coin Boost meticulously analyzes and tracks what it views as the most promising technologies built on the blockchain. 
+									Its management team has reviewed the investment merits of thousands of projects and developed a proprietary seven pillar due diligence process for screening new ventures. 
+									Less than one percent of projects Coin Boost’s investment team reviews make the cut for inclusion within fund investment portfolios.
+								</p>
 							</div>
 						</div>
 					</div>
@@ -70,7 +84,7 @@
 					<div class="row">
 						<div class="col-md-4">
 							<div class="team-player">
-								<img src="../assets/img/avatar.jpg" alt="Thumbnail Image" class="img-raised img-circle">
+								<img src="{% static_main 'img/avatar.jpg' %}" alt="Thumbnail Image" class="img-raised img-circle">
 								<h4 class="title">Gigi Hadid <br />
 									<small class="text-muted">Model</small>
 								</h4>
@@ -82,7 +96,7 @@
 						</div>
 						<div class="col-md-4">
 							<div class="team-player">
-								<img src="../assets/img/christian.jpg" alt="Thumbnail Image" class="img-raised img-circle">
+								<img src="{% static_main 'img/christian.jpg' %}" alt="Thumbnail Image" class="img-raised img-circle">
 								<h4 class="title">Christian Louboutin<br />
 									<small class="text-muted">Designer</small>
 								</h4>
@@ -93,7 +107,7 @@
 						</div>
 						<div class="col-md-4">
 							<div class="team-player">
-								<img src="../assets/img/kendall.jpg" alt="Thumbnail Image" class="img-raised img-circle">
+								<img src="{% static_main 'img/kendall.jpg' %}" alt="Thumbnail Image" class="img-raised img-circle">
 								<h4 class="title">Kendall Jenner<br />
 									<small class="text-muted">Model</small>
 								</h4>
@@ -112,8 +126,8 @@
 			<div class="section landing-section">
 				<div class="row">
 					<div class="col-md-8 col-md-offset-2">
-						<h2 class="text-center title">Work with us</h2>
-						<h4 class="text-center description">Divide details about your product or agency work into parts. Write a few lines about each one and contact us about any further collaboration. We will responde get back to you in a couple of hours.</h4>
+						<h2 class="text-center title">Contact us</h2>
+						<!-- <h4 class="text-center description">Divide details about your product or agency work into parts. Write a few lines about each one and contact us about any further collaboration. We will responde get back to you in a couple of hours.</h4> -->
 						<form class="contact-form">
 							<div class="row">
 								<div class="col-md-6">

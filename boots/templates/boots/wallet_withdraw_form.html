@@ -28,9 +28,9 @@
 	var coin_types = JSON.parse('{{ coin_types }}'.replace(new RegExp('&#39;', 'g'), '"'))
 
 	var pyvars = {
-		u_eth_address: '{{ user.userprofile.userwallet.wallet.eth_address }}',
-		u_btc_address: '{{ user.userprofile.userwallet.wallet.btc_address }}',
-		address: '{{ user.userprofile.userwallet.wallet.btc_address }}',
+		u_eth_address: '{{ user.userprofile.userwallet.wallet.eth_address|default:"" }}',
+		u_btc_address: '{{ user.userprofile.userwallet.wallet.btc_address|default:"" }}',
+		address: '{{ user.userprofile.userwallet.wallet.btc_address|default:"" }}',
 		coin_type: coin_types['btc'],
 	}
 

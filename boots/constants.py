@@ -12,6 +12,12 @@ deposit_status = {
     'completed': 2,
 }
 
+investment_status = {
+    'active': 1,
+    'completed': 2,
+    'cancelled': 2,
+}
+
 coin_types = {
     'btc': 1,
     'eth': 2,

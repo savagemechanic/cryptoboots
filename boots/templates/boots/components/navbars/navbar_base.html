@@ -74,7 +74,7 @@
                         <!-- <li class="dropdown-header">Dropdown header</li> -->
                         <li><a href="{{ profile_link }}">Profile</a></li>
                         <li class="divider"></li>
-                        <li><a href="{{ wallet_link }}">Balance: ${{ user.userprofile.userwallet.wallet.balance }}</a></li>
+                        <li><a href="{{ wallet_link }}">Balance: ${{ user.userprofile.userwallet.wallet.balance|default:'0.00' }}</a></li>
                         <li class="divider"></li>
                         <li><a href="{{ logout_link }}">Logout</a></li>
                     </ul>

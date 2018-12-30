@@ -1,0 +1,15 @@
+{% extends 'dashboard.html' %}
+<!--Only stuff in blocks show-->
+
+{% block reminder_block %}
+{% endblock reminder_block %}
+
+{% block dashboard_main %}
+	<div class="row">
+		<div class="col-md-offset-2 col-md-8">
+			<!-- confirmation snippet -->
+			{% include 'components/includes/process_confirm_snippet.html' with info_message='Deposit has been confirmed and investment plan activated'%}			
+			
+		</div>
+	</div>
+{% endblock dashboard_main %}

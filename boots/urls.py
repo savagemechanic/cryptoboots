@@ -23,9 +23,11 @@ urlpatterns = [
     # admin pages
     url(r'^admin/home', views.dashboard_index, name='dashboard_index'),
     url(r'^admin/deposits$', views.admin_deposits, name='admin_deposits'),
-    url(r'^admin/deposits/(?P<deposit_id>[0-9]+)$', views.admin_deposits, name='admin_deposit_detail'),
+    url(r'^admin/deposits/(?P<deposit_id>[0-9]+)$', views.admin_deposit_detail, name='admin_deposit_detail'),
+    url(r'^admin/deposits/(?P<deposit_id>[0-9]+)/confirm$', views.admin_confirm_deposit, name='admin_confirm_deposit'),
     url(r'^admin/withdrawals$', views.admin_withdrawals, name='admin_withdrawals'),
-    url(r'^admin/withdrawals/(?P<withdrawal_id>[0-9]+)$', views.admin_withdrawals, name='admin_withdrawal_detail'),
+    url(r'^admin/withdrawals/(?P<withdrawal_id>[0-9]+)$', views.admin_withdrawal_detail, name='admin_withdrawal_detail'),
+    url(r'^admin/withdrawals/(?P<withdrawal_id>[0-9]+)/confirm$', views.admin_confirm_withdrawal, name='admin_confirm_withdrawal'),
     url(r'^admin/wallet', views.admin_wallet, name='admin_wallet'),
 
     # super admin
